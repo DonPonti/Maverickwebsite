@@ -18,7 +18,7 @@ eleventyNavigation:
   >
 </figure>
 
-Praveen is a web developer and programmer specializing in Next.js, Astro.js, Python, and TypeScript. Coming from a technical background in Electronics and Communication Engineering, Praveen builds functional web apps and digital tools. He has a strong passion for SEO, digital marketing, and analyzing startup metrics.  he builds and manages niche websites like freegovtjjob, SaaS review blogs, and HuntingForKicks. Beyond coding, Praveen creates engaging gaming and media content across platforms like YouTube.
+Praveen is a web developer and programmer specializing in Next.js, Astro.js, Python, and TypeScript. Coming from a technical background in Electronics and Communication Engineering, Praveen builds functional web apps and digital tools. He has a strong passion for SEO, digital marketing, and analyzing startup metrics.  he builds and manages niche websites like freegovtjob.in, SaaS review blogs, and HuntingForKicks.com Beyond coding, Praveen creates engaging gaming and media content across platforms like YouTube.
 
 <dl>
   <dt>Name</dt>
@@ -34,7 +34,7 @@ Praveen is a web developer and programmer specializing in Next.js, Astro.js, Pyt
 * [Twitter](#)
 * [LinkedIn](#)
 * [Amazûn Gaming (YouTube)](#)
-* [Gor Banjara Gaming (YouTube)](#)
+
 
 <div id="projects">
 
