@@ -1,0 +1,13 @@
+---
+title: Welcome to MaverickTimes
+layout: layouts/home.njk
+description: Digital Platform for discussing about Marketing Trends.
+image: /img/profilepic.jpeg
+date: Last Modified
+---
+
+<div id="posts">
+  <h2>Latest Posts</h2>
+  {% set postslist = collections.posts %}
+  {% include "postslist.njk" %}
+</div>
