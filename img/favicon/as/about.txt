@@ -1,6 +1,0 @@
-This favicon was generated using the following font:
-
-- Font Title: Underdog
-- Font Author: undefined
-- Font Source: https://fonts.gstatic.com/s/underdog/v23/CHygV-jCElj7diMroVSiU14GN2Il.ttf
-- Font License: undefined)
