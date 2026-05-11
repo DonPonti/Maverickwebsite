@@ -2,7 +2,6 @@
 title: new blog post.
 description: Draft post from the future
 date: 2025-07-04
-scheduled: 2099-06-23
 layout: layouts/post.njk
 ---
 
