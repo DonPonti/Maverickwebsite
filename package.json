@@ -47,6 +47,8 @@
   },
   "dependencies": {
     "@ampproject/toolbox-optimizer": "^2.9.0",
+    "@google/generative-ai": "^0.24.1",
+    "@octokit/rest": "^22.0.1",
     "any-shell-escape": "^0.1.1",
     "clean-css": "^4.2.3",
     "concurrently": "^7.0.0",
