@@ -1,62 +1,75 @@
-const { Octokit } = require("@octokit/rest");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+import { Octokit } from "@octokit/rest";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-exports.handler = async (event) => {
-  if (event.httpMethod !== "POST") return { statusCode: 405, body: "Method Not Allowed" };
+export const handler = async (event) => {
+  // Only allow POST requests (Telegram sends POST)
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
+  }
 
   try {
     const body = JSON.parse(event.body);
     const message = body.message?.text;
-    const user = body.message?.from.id;
+    const userId = body.message?.from?.id;
 
-    // SECURITY: Only YOU can use this bot. 
-    // Replace YOUR_TELEGRAM_ID with your actual ID (get it from @userinfobot)
-    if (user.toString() !== process.env.MY_TELEGRAM_ID) {
+    // 1. Security: Only you can post
+    if (!userId || userId.toString() !== process.env.MY_TELEGRAM_ID) {
+      console.log("Unauthorized user ID:", userId);
       return { statusCode: 200, body: "Unauthorized" };
     }
 
-    if (!message) return { statusCode: 200 };
+    if (!message) return { statusCode: 200, body: "No message found" };
 
-    // 1. Ask Gemini to format the blog
+    // 2. Ask Gemini to format the blog
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-    const prompt = `Convert the following notes into an Eleventy blog post. 
-    Output ONLY the raw Markdown. Use this exact frontmatter:
-    ---
-    title: [SEO Title]
-    description: [Brief SEO Description]
-    date: ${new Date().toISOString().split('T')[0]}
-    tags:
-      - news
-    layout: layouts/post.njk
-    image: https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1000&auto=format&fit=crop
-    ---
-    [Content with H2/H3 headers]
+    
+    // We use a clean template literal here to avoid any stray slashes
+    const systemPrompt = `Create an Eleventy blog post. 
+Return ONLY raw Markdown. 
+Frontmatter:
+---
+title: [SEO Title]
+description: [SEO Description]
+date: ${new Date().toISOString().split('T')[0]}
+tags:
+  - news
+layout: layouts/post.njk
+image: https://images.unsplash.com/photo-1504711434969-e33886168f5c
+---
 
-    Notes: ${message}`;
+Notes to convert: ${message}`;
 
-    const result = await model.generateContent(prompt);
-    const blogMarkdown = result.response.text().replace(/```markdown|
-```/g, ""); // Clean formatting tags
+    const result = await model.generateContent(systemPrompt);
+    const responseText = result.response.text();
 
-    // 2. Prepare the Filename
-    const slug = "post-" + Date.now();
+    // 3. Clean Markdown (Safer than using a regex literal)
+    const blogMarkdown = responseText
+      .split("```markdown").join("")
+      .split("```").join("")
+      .trim();
+
+    // 4. Generate Filename
+    const slug = `post-${Date.now()}`;
     const filePath = `src/posts/${slug}.md`;
 
-    // 3. Commit to GitHub
+    // 5. Push to GitHub
     await octokit.repos.createOrUpdateFileContents({
-      owner: "YOUR_GITHUB_USERNAME", // Change this
-      repo: "YOUR_REPO_NAME",           // Change this
+      owner: "YOUR_GITHUB_USERNAME", // <-- DOUBLE CHECK THIS
+      repo: "maverick-times-repo",     // <-- DOUBLE CHECK THIS
       path: filePath,
-      message: `New post from Telegram: ${slug}`,
+      message: `Telegram Blog: ${slug}`,
       content: Buffer.from(blogMarkdown).toString('base64'),
     });
 
-    return { statusCode: 200, body: "Success! Post pushed to GitHub." };
+    console.log(`Successfully created: ${filePath}`);
+    return { statusCode: 200, body: "Post Published Successfully!" };
+
   } catch (err) {
-    console.error(err);
-    return { statusCode: 200, body: "Error occurred" }; // Telegram expects a 200 even on error to stop retrying
+    console.error("Function Error:", err);
+    // We return 200 so Telegram stops retrying the failing request
+    return { statusCode: 200, body: "Error: " + err.message };
   }
 };
