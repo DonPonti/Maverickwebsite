@@ -174,6 +174,11 @@ module.exports = function (eleventyConfig) {
     return collectionApi.getFilteredByTag("posts");
   });
   eleventyConfig.addCollection("tagList", require("./_11ty/getTagList"));
+  eleventyConfig.addCollection("startupProfiles", function(collectionApi) {
+    return collectionApi.getFilteredByTag("startup-profile").sort((a, b) => {
+      return (a.data.title || "").localeCompare(b.data.title || "");
+    });
+  });
   eleventyConfig.addPassthroughCopy("img");
   eleventyConfig.addPassthroughCopy("css");
   // We need to copy cached.js only if GA is used
@@ -190,6 +195,7 @@ module.exports = function (eleventyConfig) {
   // Unfortunately this means .eleventyignore needs to be maintained redundantly.
   // But without this the JS build artefacts doesn't trigger a build.
   eleventyConfig.setUseGitIgnore(false);
+  eleventyConfig.addWatchTarget("./startups/");
 
   /* Markdown Overrides */
   let markdownLibrary = markdownIt({

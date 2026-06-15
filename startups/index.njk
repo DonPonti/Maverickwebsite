@@ -1,0 +1,32 @@
+---
+layout: layouts/base.njk
+permalink: /startups/
+eleventyExcludeFromCollections: true
+---
+<div class="container" style="max-width: 38em; margin: 0 auto; padding: 2rem 1rem;">
+  <header style="margin-bottom: 2rem; border-bottom: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); padding-bottom: 1.5rem;">
+    <h1 style="font-size: 2.5rem; margin: 0 0 0.5rem 0; line-height: 1.2; color: var(--text-color, inherit);">Telangana Startup Directory</h1>
+    <p style="margin: 0; font-style: italic; color: var(--text-color-light, #aaa); font-size: 1rem;">
+      Discover and track promising startups across the Hyderabad and Warangal ecosystem.
+    </p>
+  </header>
+
+  <div class="startup-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+    {% for startup in collections.startupProfiles %}
+      {% if startup.data.title and startup.url != "/startups/" %}
+        <div class="startup-card" style="border: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); padding: 1.5rem; border-radius: 8px; background: var(--background-color-secondary, rgba(255,255,255,0.05)); box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.3rem;">
+            <a href="{{ startup.url }}" style="color: var(--link-color, #e7bf60); text-decoration: none; font-weight: bold;">{{ startup.data.title }}</a>
+          </h3>
+          <p style="margin: 0 0 1rem 0; font-size: 0.9rem; line-height: 1.4; color: var(--text-color, inherit);">
+            <strong style="color: var(--text-color-light, #aaa);">HQ:</strong> {{ startup.data.hq }} <br>
+            <strong style="color: var(--text-color-light, #aaa);">Industry:</strong> {{ startup.data.industry }}
+          </p>
+          <a href="{{ startup.url }}" style="font-size: 0.9rem; font-weight: bold; color: var(--link-color, #e7bf60); text-decoration: underline;">Read Profile →</a>
+        </div>
+      {% endif %}
+    {% else %}
+      <p style="color: var(--text-color-light, #aaa); font-style: italic;">No startup profiles found yet. We're currently mapping the ecosystem!</p>
+    {% endfor %}
+  </div>
+</div>
