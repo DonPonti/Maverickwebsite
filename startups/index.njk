@@ -3,30 +3,79 @@ layout: layouts/base.njk
 permalink: /startups/
 eleventyExcludeFromCollections: true
 ---
-<div class="container" style="max-width: 38em; margin: 0 auto; padding: 2rem 1rem;">
-  <header style="margin-bottom: 2rem; border-bottom: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); padding-bottom: 1.5rem;">
-    <h1 style="font-size: 2.5rem; margin: 0 0 0.5rem 0; line-height: 1.2; color: var(--text-color, inherit);">Telangana Startup Directory</h1>
-    <p style="margin: 0; font-style: italic; color: var(--text-color-light, #aaa); font-size: 1rem;">
-      Discover and track promising startups across the Hyderabad and Warangal ecosystem.
+<div class="directory-container" style="width: 100%; max-width: 42em; margin: 0 auto; padding: 2rem 1rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-sizing: border-box;">
+  
+ <div class="directory-container" style="width: 100%; max-width: 42em; margin: 0 auto; padding: 0.5rem 1rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-sizing: border-box;">
+  
+  <header style="margin-top: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); padding-bottom: 1.25rem;">
+    <h1 style="font-size: 2.25rem; margin: 0 0 0.35rem 0; line-height: 1.2; color: var(--text-color, inherit); letter-spacing: -0.02em;">Telangana Startups</h1>
+    <p style="margin: 0; font-style: italic; color: var(--text-color-light, #aaa); font-size: 0.95rem; font-family: monospace;">
+      // Showing {{ collections.startupProfiles.length }} Database Entries
     </p>
   </header>
 
-  <div class="startup-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+  <div class="filter-bar" style="display: flex; gap: 1rem; margin-bottom: 2.5rem; border-bottom: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); padding-bottom: 1.5rem;">
+    
+    <div style="display: flex; flex-direction: column; gap: 0.35rem; flex: 1;">
+      <label style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--link-color, #e7bf60); font-family: monospace;">Region</label>
+      <select disabled style="width: 100%; padding: 0.5rem; background: var(--background-color-secondary, rgba(255,255,255,0.05)); border: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); border-radius: 6px; color: var(--text-color, inherit); font-size: 0.9rem; cursor: not-allowed;">
+        <option>Anywhere</option>
+        <option>Hyderabad</option>
+        <option>Warangal</option>
+      </select>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 0.35rem; flex: 1;">
+      <label style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--link-color, #e7bf60); font-family: monospace;">Industry</label>
+      <select disabled style="width: 100%; padding: 0.5rem; background: var(--background-color-secondary, rgba(255,255,255,0.05)); border: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); border-radius: 6px; color: var(--text-color, inherit); font-size: 0.9rem; cursor: not-allowed;">
+        <option>All Industries</option>
+        <option>SaaS / HR Tech</option>
+        <option>SpaceTech</option>
+      </select>
+    </div>
+
+  </div>
+
+  <main class="directory-list" style="display: flex; flex-direction: column; width: 100%;">
     {% for startup in collections.startupProfiles %}
       {% if startup.data.title and startup.url != "/startups/" %}
-        <div class="startup-card" style="border: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); padding: 1.5rem; border-radius: 8px; background: var(--background-color-secondary, rgba(255,255,255,0.05)); box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.3rem;">
-            <a href="{{ startup.url }}" style="color: var(--link-color, #e7bf60); text-decoration: none; font-weight: bold;">{{ startup.data.title }}</a>
-          </h3>
-          <p style="margin: 0 0 1rem 0; font-size: 0.9rem; line-height: 1.4; color: var(--text-color, inherit);">
-            <strong style="color: var(--text-color-light, #aaa);">HQ:</strong> {{ startup.data.hq }} <br>
-            <strong style="color: var(--text-color-light, #aaa);">Industry:</strong> {{ startup.data.industry }}
-          </p>
-          <a href="{{ startup.url }}" style="font-size: 0.9rem; font-weight: bold; color: var(--link-color, #e7bf60); text-decoration: underline;">Read Profile →</a>
+        
+        <div class="directory-row" style="background: var(--background-color-secondary, rgba(255,255,255,0.02)); border: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); padding: 1.75rem 1.5rem; margin-bottom: -1px; display: flex; gap: 1.25rem; align-items: center; justify-content: space-between; box-sizing: border-box; width: 100%; overflow: hidden;">
+          
+          <div style="display: flex; gap: 1.25rem; align-items: center; min-width: 0; flex: 1;">
+            <div style="width: 44px; height: 44px; min-width: 44px; background: var(--primary, #f9c412); color: #181818; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; border-radius: 6px;">
+              {{ startup.data.title | slice(0, 1) }}
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; flex: 1;">
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem;">
+                <h2 style="font-size: 1.2rem; font-weight: 700; margin: 0; line-height: 1.2;">
+                  <a href="{{ startup.url }}" style="color: var(--text-color, inherit); text-decoration: none;">{{ startup.data.title }}</a>
+                </h2>
+                <span style="font-size: 0.85rem; color: var(--text-color-light, #888); font-family: monospace;">
+                  • {{ startup.data.hq | replace(", Telangana", "") }}
+                </span>
+              </div>
+
+              <p style="margin: 0; font-size: 0.9rem; line-height: 1.4; color: var(--text-color-light, #aaa); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; max-width: 320px;">
+                {{ startup.data.description or "Ecosystem platform mapping local industrial development, funding activity, and innovative regional solutions." }}
+              </p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; font-family: monospace; font-size: 0.7rem; font-weight: bold; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; max-width: 150px;">
+            <span style="background: rgba(231, 191, 96, 0.1); color: var(--link-color, #e7bf60); padding: 3px 6px; border-radius: 4px; white-space: nowrap;">
+              W2026
+            </span>
+            <span style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); padding: 3px 6px; border-radius: 4px; text-transform: uppercase; color: var(--text-color, inherit); white-space: nowrap; max-width: 90px; overflow: hidden; text-overflow: ellipsis;" title="{{ startup.data.industry }}">
+              {{ startup.data.industry }}
+            </span>
+          </div>
+
         </div>
+
       {% endif %}
-    {% else %}
-      <p style="color: var(--text-color-light, #aaa); font-style: italic;">No startup profiles found yet. We're currently mapping the ecosystem!</p>
     {% endfor %}
-  </div>
+  </main>
+
 </div>

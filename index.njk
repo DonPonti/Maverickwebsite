@@ -1,27 +1,69 @@
 ---
-title: Welcome to MaverickTimes
-layout: layouts/home.njk
-description: Digital Platform for discussing about Marketing Trends.
-image: /img/profilepic.jpeg
-date: Last Modified
+layout: layouts/base.njk
+permalink: /
 ---
+<div class="container" style="max-width: 42em; margin: 0 auto; padding: 2rem 1rem;">
+  
+  <div class="container" style="max-width: 42em; margin: 0 auto; padding: 0.5rem 1rem;">
+  
+  <header style="margin-top: 0.5rem; margin-bottom: 2rem; text-align: center;">
+    <h1 style="font-size: 2.25rem; font-weight: 800; margin: 0 0 0.35rem 0; letter-spacing: -0.03em; color: var(--text-color, inherit);">
+      Maverick Times
+    </h1>
+    <p style="margin: 0; font-size: 0.9rem; color: var(--text-color-light, #888); font-family: monospace; letter-spacing: 0.02em;">
+      The Telangana Business & Startup Index
+    </p>
+  </header>
 
-<figure>
-  <img 
-    src="/img/profilepic.jpeg" 
-    alt="" 
-    align="left" 
-    aria-label="Praveen" 
-    fetchpriority="high" 
-    loading="eager"
-  >
-</figure>
+  <section style="margin-bottom: 3.5rem;">
+    <h2 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; color: var(--link-color, #e7bf60); font-family: monospace;">
+      // Editorial Briefings
+    </h2>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+      {% for post in collections.posts | reverse %}
+        <li style="margin-bottom: 0.85rem; display: flex; align-items: baseline; gap: 1rem;">
+          <span style="font-family: monospace; font-size: 0.85rem; color: var(--text-color-light, #666); min-width: 45px;">
+            {{ post.date | htmlDateString }}
+          </span>
+          <a href="{{ post.url }}" style="font-size: 1.05rem; color: var(--text-color, inherit); text-decoration: none; border-bottom: 1px solid transparent;" 
+             onmouseover="this.style.borderBottom='1px solid var(--text-color)'" 
+             onmouseout="this.style.borderBottom='1px solid transparent'">
+            {{ post.data.title }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
 
-Praveen is a web developer specializing in Next.js, Eleventy, Python, and TypeScript. Combining his engineering background with a passion for SEO and startup metrics, he builds functional web apps and grows niche sites like freegovtjob.in and SaaS blogs. Beyond coding, he creates gaming and media content on YouTube.
+  <section style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; border-bottom: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); padding-bottom: 0.5rem;">
+      <h2 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin: 0; color: var(--link-color, #e7bf60); font-family: monospace;">
+        // Ecosystem Directory
+      </h2>
+      <a href="/startups/" style="font-size: 0.85rem; font-family: monospace; color: var(--text-color-light, #888); text-decoration: underline;">
+        View Full Index ({% if collections.startupProfiles %}{{ collections.startupProfiles.length }}{% else %}0{% endif %}) →
+      </a>
+    </div>
 
+    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+      {% for startup in collections.startupProfiles %}
+        {% if startup.data.title and startup.url != "/startups/" %}
+          <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 1rem; padding: 0.25rem 0;">
+            <div>
+              <a href="{{ startup.url }}" style="font-weight: 600; color: var(--text-color, inherit); text-decoration: none;">
+                {{ startup.data.title }}
+              </a>
+              <span style="font-size: 0.85rem; color: var(--text-color-light, #777); margin-left: 0.5rem; font-family: monospace;">
+                ({{ startup.data.industry }})
+              </span>
+            </div>
+            <span style="font-size: 0.85rem; color: var(--text-color-light, #777); font-family: monospace; text-align: right;">
+              {{ startup.data.hq | replace(", Telangana", "") }}
+            </span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
 
-<div id="posts">
-  <h2>Latest Posts</h2>
-  {% set postslist = collections.posts %}
-  {% include "postslist.njk" %}
 </div>

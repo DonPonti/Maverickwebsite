@@ -48,54 +48,76 @@
     <script csp-hash>if (/Mac OS X/.test(navigator.userAgent))document.documentElement.classList.add('apple')
     </script>
     
-    </head>
+  </head>
   <body>
-    <header>
-      <nav>
-        <div id="nav">
-          <h1><a href="{{ '/' | url }}" title="Homepage">{{ metadata.title }}</a></h1>
-          {#- Read more about `eleventy-navigation` at https://www.11ty.dev/docs/plugins/navigation/ #}
+    <div style="max-width: 42em; margin: 0 auto; padding: 0 1rem; box-sizing: border-box;">
+      
+      <header style="margin-top: 1rem; margin-bottom: 0.5rem; padding: 0;">
+        <nav style="display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 0.5rem; border-bottom: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); font-family: monospace; font-size: 0.9rem;">
+          
+          <div style="font-weight: bold; letter-spacing: -0.02em;">
+            <a href="{{ '/' | url }}" style="color: #ffffff; text-decoration: none;">⚡ {{ metadata.title }}</a>
+          </div>
+          
+          <div style="display: flex; gap: 0.75rem; align-items: baseline;">
+            <a href="/" style="color: #f9c412; text-decoration: none; font-weight: bold; transition: opacity 0.15s ease;" 
+               onmouseover="this.style.opacity='0.7'" 
+               onmouseout="this.style.opacity='1'">Briefings</a>
+            
+            <span style="color: rgba(255,255,255,0.2); font-size: 0.8rem;">|</span>
+            
+            <a href="/startups/" style="color: #f9c412; text-decoration: none; font-weight: bold; transition: opacity 0.15s ease;" 
+               onmouseover="this.style.opacity='0.7'" 
+               onmouseout="this.style.opacity='1'">Startups</a>
+            
+            {%- for entry in collections.all | eleventyNavigation %}
+              <span style="color: rgba(255,255,255,0.2); font-size: 0.8rem;">|</span>
+              <a href="{{ entry.url | url }}" style="color: #f9c412; text-decoration: none; font-weight: bold; transition: opacity 0.15s ease;" 
+                 onmouseover="this.style.opacity='0.7'" 
+                 onmouseout="this.style.opacity='1'">{{ entry.title }}</a>
+            {%- endfor %}
+          </div>
+        </nav>
+        
+        <div id="reading-progress" aria-hidden="true"></div>
+        {% block extraArticleHeader %}{% endblock %}
+        <dialog id="message"></dialog>
+        
+        {% if googleanalytics %}
+        <noscript>
+          <img src="/api/ga?v=1&_v=j83&t=pageview&dr=https%3A%2F%2Fno-script.com&_s=1&dh={{ metadata.domain | encodeURIComponent }}&dp={{ page.url | encodeURIComponent }}&ul=en-us&de=UTF-8&dt={{title|encodeURIComponent}}&tid={{googleanalytics}}" width="1" height="1"
+          style="display:none" alt="">
+        </noscript>
+        {% endif %}
+      </header>
+
+      <main style="margin: 0; padding: 0;">
+        <article style="margin: 0; padding: 0;">
+          {% block article %}
+            {{ content | safe }}
+          {% endblock %}
+
+          {% if page.url and page.url.indexOf("/posts/") > -1 %}
+            <p style="font-family: monospace; font-size: 0.85rem; color: var(--text-color-light, #888); margin-top: 2rem; border-top: 1px solid var(--text-color-lightest, rgba(255,255,255,0.05)); padding-top: 1rem;">
+              Published <time datetime="{{ page.date | htmlDateString }}">{{ page.date | readableDate }}</time>
+            </p>
+          {% endif %}
+        </article>
+      </main>
+
+      <footer style="margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--text-color-lightest, rgba(255,255,255,0.1)); padding-bottom: 3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-family: monospace; font-size: 0.85rem; color: var(--text-color-light, #888);">
+        <div>
+          <span>&copy; 2026 Praveen.</span>
+          <a href="/book-a-session/" style="margin-left: 1rem; color: var(--link-color, #f9c412); text-decoration: underline; font-weight: bold;">Book a Session →</a>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <a href="/" style="color: inherit; text-decoration: none;">Home</a>
+          <a href="/startups/" style="color: inherit; text-decoration: none;">Startups</a>
           {%- for entry in collections.all | eleventyNavigation %}
-            <a href="{{ entry.url | url }}">{{ entry.title }}</a>
+            <a href="{{ entry.url | url }}" style="color: inherit; text-decoration: none;">{{ entry.title }}</a>
           {%- endfor %}
         </div>
-        <div id="reading-progress" aria-hidden="true"></div>
-      </nav>
-      <h1>{{ title }}</h1>
-      {% block extraArticleHeader %}{% endblock %}
-      <dialog id="message"></dialog>
-      {% if googleanalytics %}
-      <noscript>
-        <img src="/api/ga?v=1&_v=j83&t=pageview&dr=https%3A%2F%2Fno-script.com&_s=1&dh={{ metadata.domain | encodeURIComponent }}&dp={{ page.url | encodeURIComponent }}&ul=en-us&de=UTF-8&dt={{title|encodeURIComponent}}&tid={{googleanalytics}}" width="1" height="1"
-        style="display:none" alt="">
-      </noscript>
-      {% endif %}
-    </header>
-
-    <main>
-      <article>
-        {% block article %}
-          {{ content | safe }}
-        {% endblock %}
-
-        {% if page.url and page.url.indexOf("/posts/") > -1 %}
-          <p>Published <time datetime="{{ page.date | htmlDateString }}">{{ page.date | readableDate }}</time></p>
-        {% endif %}
-      </article>
-    </main>
-
-    <footer>
-      <nav style="margin-bottom: 1.5rem; font-size: 1em; font-weight: 700;">
-        <a href="{{ '/' | url }}" style="text-decoration: none;">Home</a>
-        {%- for entry in collections.all | eleventyNavigation %}
-          <a href="{{ entry.url | url }}" style="margin-left: 1.5em; text-decoration: none;">{{ entry.title }}</a>
-        {%- endfor %}
-      </nav>
-
-      <p style="font-size: 1em;">&copy; 2026 Praveen. All rights reserved.</p>
-
-      <a href="/book-a-session/" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background-color: var(--primary, #f9c412); color: #181818; font-weight: 700; text-decoration: none; border-radius: 4px; font-size: 1em;">Book a Session</a>
-    </footer>
-
-    </body>
+      </footer>
+    </div>
+  </body>
 </html>
