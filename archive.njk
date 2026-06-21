@@ -1,9 +1,23 @@
 ---
 layout: layouts/home.njk
 permalink: /posts/
+title: Blog
+templateClass: tmpl-home-startups
+description: Notes on the Hyderabad and Warangal startup scene.
+eleventyNavigation:
+  key: Blog
+  order: 2
 ---
+{% from "gateway.njk" import gateway %}
 
-<h1>Archive</h1>
+<section class="hero hero-compact">
+  {{ gateway() }}
+  <p class="eyebrow">Notes &middot; Hyderabad &amp; Warangal</p>
+  <h2 class="hero-headline">From the blog.</h2>
+  <p class="tagline">Short notes on the startup scene in both cities &mdash; sectors, sourcing, and what we're seeing.</p>
+</section>
 
-{% set postslist = collections.posts %}
-{% include "postslist.njk" %}
+<section class="directory">
+  {% set postslist = collections.posts %}
+  {% include "postslist.njk" %}
+</section>

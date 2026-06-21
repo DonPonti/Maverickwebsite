@@ -1,0 +1,74 @@
+---
+layout: layouts/home.njk
+templateClass: tmpl-startup
+pagination:
+  data: startups
+  size: 1
+  alias: startup
+permalink: "/startups/{{ startup.name | slugify }}/"
+eleventyComputed:
+  title: "{{ startup.name }}"
+  description: "{{ startup.oneLiner }}"
+---
+{% from "gateway.njk" import gateway %}
+{% from "startuprow.njk" import row with context %}
+{% set hue = sectorColors[startup.sector] | default("slate") %}
+
+<section class="hero hero-compact startup-hero">
+  {{ gateway() }}
+  <p class="eyebrow"><a href="/startups/">&larr; All startups</a></p>
+  <div class="startup-hero-top">
+    <div class="logo-chip logo-chip-{{ hue }} logo-chip-lg" aria-hidden="true">{{ startup.name | truncate(1, true, "") }}</div>
+    <div>
+      <h2 class="hero-headline startup-name">{{ startup.name }}</h2>
+      <p class="tagline">{{ startup.oneLiner }}</p>
+    </div>
+  </div>
+  <div class="actions">
+    <a class="btn btn-primary" href="{{ startup.website }}" target="_blank" rel="noopener">Visit website <span aria-hidden="true">&rarr;</span></a>
+    <span class="tag tag-{{ hue }} tag-lg">{{ startup.sector }}</span>
+  </div>
+</section>
+
+<section class="directory startup-detail">
+  <div class="info-box reveal">
+    <div class="info-item">
+      <dt>Location</dt>
+      <dd>{{ startup.location }}, Telangana</dd>
+    </div>
+    <div class="info-item">
+      <dt>Sector</dt>
+      <dd>{{ startup.sector }}</dd>
+    </div>
+    <div class="info-item">
+      <dt>Founded</dt>
+      <dd>{{ startup.founded }}</dd>
+    </div>
+    <div class="info-item">
+      <dt>Stage</dt>
+      <dd>{{ startup.stage }}</dd>
+    </div>
+    <div class="info-item">
+      <dt>Team size</dt>
+      <dd>{{ startup.teamSize }}</dd>
+    </div>
+    <div class="info-item">
+      <dt>Website</dt>
+      <dd><a href="{{ startup.website }}" target="_blank" rel="noopener">{{ startup.website | replace("https://", "") }}</a></dd>
+    </div>
+  </div>
+
+  <article class="startup-summary reveal">
+    <h2>About {{ startup.name }}</h2>
+    <p>{{ startup.description }}</p>
+  </article>
+
+  {% set others = startups | relatedStartups(startup, 3) %}
+  {% if others.length %}
+  <div class="directory-toolbar">
+    <h2>More from {{ startup.location }}</h2>
+    <a href="/startups/">View all &rarr;</a>
+  </div>
+  {% for s in others %}{{ row(s) }}{% endfor %}
+  {% endif %}
+</section>

@@ -1,0 +1,13 @@
+{% macro row(s) %}
+{% set hue = sectorColors[s.sector] | default("slate") %}
+{% set slug = s.name | slugify %}
+<a class="directory-row reveal" href="/startups/{{ slug }}/">
+  <div class="logo-chip logo-chip-{{ hue }}" aria-hidden="true">{{ s.name | truncate(1, true, "") }}</div>
+  <div class="meta">
+    <h3>{{ s.name }}</h3>
+    <p>{{ s.oneLiner }}</p>
+  </div>
+  <span class="tag tag-{{ hue }}">{{ s.sector }}</span>
+  <span class="visit">View <span aria-hidden="true">&rarr;</span></span>
+</a>
+{% endmacro %}

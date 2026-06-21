@@ -1,31 +1,20 @@
 ---
-title: This is my first post.
-description: This is a post on My Blog about agile frameworks.
-date: 2018-05-01
-scheduled: 2018-05-01
+title: Why we're building a directory for Hyderabad & Warangal
+description: A short note on why this site exists and what we're trying to track.
+date: 2026-01-12
+scheduled: 2026-01-12
 tags:
-  - news
+  - notes
 layout: layouts/post.njk
-image: https://cdn.pixabay.com/photo/2020/08/30/20/54/rice-field-5530707_1280.jpg
 ---
 
-Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster collaborative thinking to further the overall value proposition. Organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.
+Hyderabad's startup scene gets covered. Warangal's almost never does, even though
+a steady stream of founders are building out of NIT Warangal and the wider region.
+This site is a small attempt to track both in one place — a directory of companies,
+plus short notes on what we're seeing.
 
-Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.
+It's intentionally minimal: no funding-round drama, no rankings, just a list of
+who's building what, where. If you're a founder in either city, [get in touch](/startups/)
+to be added.
 
-![An image](https://cdn.pixabay.com/photo/2020/08/30/20/54/rice-field-5530707_1280.jpg)
-
-## Section Header
-
-Capitalize on low hanging fruit to identify a ballpark value added activity to beta test. Override the digital divide with additional clickthroughs from DevOps. Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.
-
-``` text/2-3
-// this is a command
-function myCommand() {
-	let counter = 0;
-	counter++;
-}
-
-// Test with a line break above this line.
-console.log('Test');
-```
+This is sample content — replace it with your own posts once you're set up.
