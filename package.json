@@ -7,13 +7,13 @@
     "build-ci": "npm run js-build && eleventy && npm run test",
     "build": "npm run clean && npm run build-ci",
     "watch": "concurrently \"npm run serve\" \"npm run js-build-watch\" \"npm run test-watch\"",
-    "serve": "npm run clean && npm run js-build && eleventy --serve",
+    "serve": "npm run clean && eleventy --serve",
     "js-build": "rollup -c rollup.config.js",
     "js-build-watch": "rollup -c rollup.config.js -w",
-    "debug": "node scripts/debug.js",
+    "debug": "DEBUG=* eleventy && npm run test",
     "test": "mocha test/test*.js",
     "test-watch": "mocha test/test*.js --watch --watch-files=test/*",
-    "clean": "node scripts/clean.js"
+    "clean": "del /Q _site\\posts\\* 2>nul || echo No files to clean"
   },
   "pre-push": [
     "build"
@@ -47,6 +47,8 @@
   },
   "dependencies": {
     "@ampproject/toolbox-optimizer": "^2.9.0",
+    "@google/generative-ai": "^0.24.1",
+    "@octokit/rest": "^22.0.1",
     "any-shell-escape": "^0.1.1",
     "clean-css": "^4.2.3",
     "concurrently": "^7.0.0",

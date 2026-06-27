@@ -1,26 +1,26 @@
 {
-  "title": "Telangana Startups",
-  "url": "https://telangana-startups.example.com",
-  "domain": "telangana-startups.example.com",
-  "description": "A minimal directory and blog tracking startups building out of Hyderabad and Warangal.",
-  "genre": "Technology",
-  "googleAnalyticsId": "",
+  "title": "MaverickTimes.in",
+  "url": "MaverickTimes.in",
+  "domain": "MaverickTimes.in",
+  "description": "Digital Platform for discussing about Marketing Trends.",
+  "genre": "Insert a schema.org genre",
+  "googleAnalyticsId": "GA ID. Update me. Note, that this is not compatible with the not-yet-commonly used version 4 of Google Analytics",
   "sendWebVitals": false,
   "feed": {
-    "subtitle": "New startups and notes from the Hyderabad & Warangal startup scene.",
+    "subtitle": "Subtitle. Update me.",
     "filename": "feed.xml",
     "path": "/feed/feed.xml",
-    "id": "https://telangana-startups.example.com"
+    "id": "https://update-me.com"
   },
   "jsonfeed": {
     "path": "/feed/feed.json",
-    "url": "https://telangana-startups.example.com/feed/feed.json"
+    "url": "https://update-me.com/feed/feed.json"
   },
   "author": {
-    "name": "Telangana Startups",
+    "name": "Author Name. Update me.",
     "twitterHandle": "update_me"
   },
   "publisher": {
-    "name": "Telangana Startups"
+    "name": "Publisher name. Update me."
   }
 }

@@ -142,15 +142,6 @@ module.exports = function (eleventyConfig) {
     return new CleanCSS({}).minify(code).styles;
   });
 
-  eleventyConfig.addFilter(
-    "relatedStartups",
-    (startups, current, count) => {
-      return startups
-        .filter((s) => s.location === current.location && s.name !== current.name)
-        .slice(0, count || 3);
-    }
-  );
-
   eleventyConfig.addFilter("readableDate", (dateObj) => {
     return DateTime.fromJSDate(dateObj, { zone: "utc" }).toFormat(
       "dd LLL yyyy"
@@ -189,6 +180,8 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy(GA_ID ? "js" : "js/*[!cached].*");
   eleventyConfig.addPassthroughCopy("fonts");
   eleventyConfig.addPassthroughCopy("_headers");
+  eleventyConfig.addPassthroughCopy("googlef11a564d37d99f8b.html");
+
 
   // We need to rebuild upon JS change to update the CSP.
   eleventyConfig.addWatchTarget("./js/");

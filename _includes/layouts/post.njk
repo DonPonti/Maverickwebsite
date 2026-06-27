@@ -9,6 +9,10 @@ templateClass: tmpl-post
    {% set wc = content | striptags | wordcount %}
    {% set wPerMinute = (wc / 240) + 1 %}
    <aside>
+     <p>By {{ metadata.author.name }} on {{ page.date | readableDate }}</p>
+     {% if tags %}
+     <p>Tags: {% for tag in tags %}<a href="/tags/{{ tag | slugify }}/">{{ tag }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</p>
+     {% endif %}
      {{ wPerMinute | round }} min read.
    </aside>
 {% endblock %}

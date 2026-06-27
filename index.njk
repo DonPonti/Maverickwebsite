@@ -1,47 +1,27 @@
 ---
-title: Telangana Startups
+title: Welcome to MaverickTimes
 layout: layouts/home.njk
-templateClass: tmpl-home-index
-description: A minimal directory and blog tracking startups building out of Hyderabad and Warangal.
+description: Digital Platform for discussing about Marketing Trends.
+image: /img/profilepic.jpeg
 date: Last Modified
 ---
-{% from "startuprow.njk" import row with context %}
-{% from "gateway.njk" import gateway %}
 
-<section class="hero">
-  {{ gateway() }}
-  <p class="eyebrow">Directory &middot; Hyderabad &amp; Warangal</p>
-  <h2 class="hero-headline">A registry of startups<br>building out of Telangana.</h2>
-  <p class="tagline">
-    Fintech, SaaS, agritech, and everything in between &mdash; tracked in one
-    minimal, no-nonsense list.
-  </p>
-  <div class="actions">
-    <a class="btn btn-primary" href="/startups/">Browse the directory</a>
-    <a class="btn" href="mailto:hello@example.com?subject=Add%20our%20startup">Submit a startup</a>
-  </div>
-  <dl class="stat-strip">
-    <div><dt>{{ startupStats.total }}</dt><dd>Startups</dd></div>
-    <div><dt>{{ startupStats.cities }}</dt><dd>Cities</dd></div>
-    <div><dt>{{ startupStats.sectors }}</dt><dd>Sectors</dd></div>
-  </dl>
-</section>
+<figure>
+  <img 
+    src="/img/profilepic.jpeg" 
+    alt="" 
+    align="left" 
+    aria-label="Praveen" 
+    fetchpriority="high" 
+    loading="eager"
+  >
+</figure>
 
-<section class="directory">
-  <div class="directory-toolbar">
-    <h2>Recently added</h2>
-    <a href="/startups/">View all {{ startups.length }} &rarr;</a>
-  </div>
-  {% for s in startups %}
-    {% if loop.index0 < 6 %}{{ row(s) }}{% endif %}
-  {% endfor %}
-</section>
+Praveen is a web developer specializing in Next.js, Eleventy, Python, and TypeScript. Combining his engineering background with a passion for SEO and startup metrics, he builds functional web apps and grows niche sites like freegovtjob.in and SaaS blogs. Beyond coding, he creates gaming and media content on YouTube.
 
-<section class="directory" id="posts">
-  <div class="directory-toolbar">
-    <h2>From the blog</h2>
-    <a href="/posts/">Archive &rarr;</a>
-  </div>
+
+<div id="posts">
+  <h2>Latest Posts</h2>
   {% set postslist = collections.posts %}
   {% include "postslist.njk" %}
-</section>
+</div>
