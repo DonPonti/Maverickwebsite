@@ -1,0 +1,5 @@
+{
+  "layout": "layouts/startup-single.njk",
+  "tags": ["startups"],
+  "permalink": "startups/{{ page.fileSlug }}/"
+}
