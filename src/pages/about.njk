@@ -1,0 +1,69 @@
+---
+layout: base
+tags: nav
+title: About Our Mission
+eleventyNavigation:
+  key: About
+  order: 4
+permalink: /about/
+---
+<div class="page page--about">
+    <header class="page__header">
+        <h1 class="page__title">Decoding Regional Success.</h1>
+    </header>
+    <div class="page__content page__content--fullwidth">
+
+        <div class="about">
+            <div class="about__header">
+                <div class="about__photo">
+                    <img
+                        class="responsive-image"
+                        src="{{ '/assets/images/logo.png' | url }}"
+                        sizes="(min-width: 940px) 40vw, 100vw"
+                        alt="Maverick Times Logo"
+                        style="border-radius: 8px; border: 1px solid #e2e8f0;"
+                    />
+                </div>
+                <div class="about__intro lead">
+                    <p>We map the growth, revenue frameworks, and strategic execution paths of emerging startups across South India's high-potential tech hubs.</p>
+                    <p>
+                        Inspired by the data-dense blueprint of <em>Starter Story</em>, we don't just list companies—we study them. We break down the real numbers, case studies, and origin mechanics of businesses built right out of regional ecosystems.
+                    </p>
+                    <p>Our mandate is providing transparent data, strategic visibility, and operational breakdowns for humans building the future.</p>
+                </div>
+            </div>
+            <div class="about__content markdown">
+                <h2>Our Ecosystem Focus</h2>
+                <p>
+                    We actively map and analyze businesses driving impact across three key regional tech corridors:
+                </p>
+                <ul>
+                    <li><strong>Hyderabad:</strong> High-growth SaaS pipelines, deep-tech platforms, and premium e-commerce ecosystems.</li>
+                    <li><strong>Warangal / Hanamkonda:</strong> Regional tech engines, hyper-local marketplaces, and bootstrap breakthroughs transforming Tier-2 paradigms.</li>
+                    <li><strong>Vijayawada:</strong> Fast-scaling consumer brands, agritech solutions, and regional supply chain innovations.</li>
+                </ul>
+            
+                <h2>What We Study</h2>
+                <p>
+                    Every case study and directory listing on our platform aims to answer the core operational questions: How did they build traction? What is their funding structure? What systems run their backend pipelines? 
+                </p>
+                <p>By capturing granular detail cards (like revenue models, established milestones, team distribution, and monetization metrics), we serve as an open playbook for local builders.</p>
+
+                <h2>Submit Your Story</h2>
+                <p>
+                    Are you a founder operating out of our targeted regional corridors? We want to audit your milestones, map your trajectory, and host your breakdown on our network.
+                </p>
+                <p>
+                    If you are interested in opening up your growth playbook for a detailed feature case study, <a href="mailto:{{ site.email }}">reach out to our editorial team</a>.
+                </p>
+
+                <h2>Connect Online</h2>
+                <ul class="about__social" style="list-style: none; padding: 0; display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                    <li>{% icon "github" %}<a href="https://github.com/yourstartup" style="margin-left: 0.25rem;">Github</a></li>
+                    <li>{% icon "external" %}<a href="https://linkedin.com/company/yourstartup" style="margin-left: 0.25rem;">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>

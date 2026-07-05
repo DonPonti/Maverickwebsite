@@ -1,0 +1,82 @@
+---
+layout: base
+---
+<article 
+    id="{{ title | slug }}" 
+    class="post h-entry" 
+    role="article" 
+    itemscope 
+    itemtype="http://schema.org/BlogPosting"
+    aria-labelledby="{{ title | slug }}-title" 
+>
+    <header class="post__header">
+        <h1 id="{{ title | slug }}-title" class="post__title p-name title" itemprop="headline">{{ title }}</h1>
+        <div class="post__meta">
+            <p {% if demo %}class="u-mr2"{% endif %}>
+                <time class="post__date dt-published" itemprop="datePublished" datetime="{{ page.date | dateToISO }}">{{ page.date | readableDate('dd LLL yyyy') }}</time>
+                {% if tags %}
+                <span aria-label="in category">&middot;</span> <span class="post__tags p-category">{{ tags | join(', ') }}</span>
+                {% endif %}
+                {% if draft %}
+                <span aria-hidden="true">&middot;</span> <span class="post__status">(Draft)</span>
+                {% endif %}
+            </p>
+
+            {% if demo %}
+            <a href="{{ demo }}" class="btn btn--primary post__demo" target="_blank" rel="noopener noreferrer">
+                View Demo
+            </a>
+            {% endif %}
+        </div>
+
+        {% if canonicalUrl and canonicalSource %}
+            <p class="post__canonical">originally published on: <a href="{{ canonicalUrl }}">{% icon "external" %} {{ canonicalSource }}</a></p>
+        {% endif %}
+
+        {% if draft %}
+        <div class="post__disclaimer">
+            <div class="callout callout--info">
+                <span class="callout__icon">{% icon "info" %}</span>
+                <div class="callout__content">
+                    <p>
+                        <strong>This post is an unfinished draft.</strong> 
+                        It is just an idea for now. Want to read more about this or collaborate? 
+                        <a href="mailto:{{ site.email }}?subject={{ title|urlencode }}">Let us know.</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </header>
+
+    <div class="post__content e-content markdown" itemprop="articleBody">
+        {{ content | safe }}
+    </div>
+
+    <div class="post__footer">
+        <div hidden>
+            <a class="u-url" href="{{ page.url | url | absoluteUrl(site.url) }}">{{ title }}</a>
+            <p class="h-card p-author">
+                <a class="p-name u-url" rel="author" href="{{ site.url }}">{{ author.name }}</a>
+                <img class="u-photo" src="{{ author.avatar | url | absoluteUrl(site.url) }}" eleventy:ignore />
+            </p>
+        </div>
+
+        {% if draft %}
+            <p class="post__footer-incomplete" aria-hidden="true">&hellip;</p>
+        {% else %}
+            <p class="post__footer-info">
+                Published in [{{ tags | join(', ') }}] &middot; {{ page.date | readableDate('dd LLL yyyy') }} <br/>
+                <a href="{{ site.repo }}/tree/master/{{ page.inputPath }}" title="suggest a change to this post by submitting a PR">Edit this Post</a>
+            </p>
+        {% endif %}
+    </div>
+    
+</article>
+
+{% if not draft %}
+<div class="postsection">
+    <h3 class="postsection__title">Other things we've written</h3>
+    {% include 'otherposts.njk' %}
+</div>
+{% endif %}

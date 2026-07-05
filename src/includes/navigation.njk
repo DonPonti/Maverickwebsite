@@ -1,0 +1,46 @@
+<nav class="nav js-nav" role="navigation" tabindex="-1">
+
+    {# Menu Toggle Button (Kept for responsive mobile drawer layouts) #}
+    <button
+        class="iconbtn nav__togglebtn js-nav-toggle"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+    >
+        <span class="sr-only">toggle menu</span>
+        <span class="menuicon">
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+        </span>
+    </button>
+
+    {# Nav Links Menu Context #}
+    <div class="nav__content">
+        <ul class="nav__menu js-nav-menu" id="nav-menu">
+        {%- for item in collections.all | eleventyNavigation -%}
+            {%- if item.url -%}
+                {%- set isCurrent = (item.url == page.url) -%}
+                {%- set isParent = item.url != '/' and item.url in page.url -%}
+                <li class="nav__item{% if isCurrent or isParent %} nav__item--active{% endif %}">
+                    <a
+                        href="{% if isCurrent %}#main{% else %}{{ item.url | url }}{% endif %}"
+                        class="nav__link"
+                        style="font-family: 'Noe Display', Georgia, serif; font-weight: 500; font-size: 18px; letter-spacing: -0.01em;"
+                        {% if isCurrent %}aria-current="page"{% endif %}
+                    >
+                        {# Removed the hardcoded '0' index prefixes for a cleaner editorial directory feel #}
+                        {{ item.title }}
+                    </a>
+                </li>
+            {%- endif -%}
+        {%- endfor -%}
+        </ul>
+    </div>
+    
+    {# Menu BG Animation layers preserved #}
+    <div class="nav__bg">
+        <div class="nav__bg__circle"></div>
+    </div>
+
+</nav>

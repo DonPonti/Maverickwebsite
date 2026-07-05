@@ -1,0 +1,39 @@
+---
+layout: base
+eleventyNavigation:
+  key: Home
+  order: 1
+permalink: /
+---
+
+<div class="hero fade-in">
+    <div class="hero__inner">
+        <h1 class="hero__title">We study regional startups.</h1>
+        <p class="hero__pretitle"><a href="/about/">Welcome to Maverick Times</a></p>
+
+        <div class="hero__content">
+            <p>
+                We track growth playbooks, breakdown revenue data, and profile emerging founders across 
+                <a href="/startups/" class="hero__link">Hyderabad</a>, 
+                <a href="/startups/" class="hero__link">Warangal</a>, and 
+                <a href="/startups/" class="hero__link">Vijayawada</a>. 
+                Read deep-dive case studies on our <a href="/blog" class="hero__link">blog</a> 
+                or check out the interactive <a href="/startups/" class="hero__link">Startup Directory</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+{% if collections.featured.length %}
+<div class="u-mb4">
+    <h2>Featured Stories</h2>
+    {% include "featuredposts.njk" %}
+</div>
+{% endif %}
+
+<div class="u-mb4">
+    {% signup %}
+    Join our exclusive email list tailored for founders, operators, and ecosystem builders. 
+    Get detailed breakdowns of high-revenue case studies and regional growth metrics delivered straight to your inbox once a month. Unsubscribe at any time.
+    {% endsignup %}
+</div>

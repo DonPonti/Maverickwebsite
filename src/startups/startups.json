@@ -1,0 +1,5 @@
+{
+  "layout": "startup-profile.njk",
+  "tags": ["startups"],
+  "permalink": "/startups/{{ page.fileSlug }}/"
+}

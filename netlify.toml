@@ -1,0 +1,82 @@
+[build]
+    command = "npm run build"
+    publish = "dist"
+    functions = "functions"
+
+[build.environment]
+    NODE_VERSION = "20.11"
+
+[[plugins]]
+    package = "./plugins/webmention-cache"
+
+[[headers]]
+    for = "/*"
+    [headers.values]
+        X-Frame-Options = "DENY"
+        X-XSS-Protection = "1; mode=block"
+        X-Content-Type-Options = "nosniff"
+        Referrer-Policy= "no-referrer-when-downgrade"
+        Permissions-Policy = "interest-cohort=()"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    cache-control = "max-age=0,no-cache,no-store,must-revalidate"
+
+# Netlify subdomain
+[[redirects]]
+    from = "https://mxb.netlify.com/*"
+    to = "https://mxb.dev/:splat"
+    status = 301
+    force = true
+
+# AT domain
+[[redirects]]
+    from = "https://mxb.at/*"
+    to = "https://mxb.dev/:splat"
+    status = 301
+    force = true
+
+[[redirects]]
+    from = "https://www.mxb.at/*"
+    to = "https://mxb.dev/:splat"
+    status = 301
+    force = true
+
+[[redirects]]
+    from = "https://mxb.dev/blog/make-free-stuff-web3"
+    to = "https://mxb.dev/blog/make-free-stuff"
+    status = 302
+    force = true
+
+[[redirects]]
+    from = "https://mxb.dev/blog/rethinking-social-media"
+    to = "https://mxb.dev/blog/the-indieweb-for-everyone"
+    status = 302
+    force = true
+
+# Bots
+[[redirects]]
+    from = "/wp-login.php"
+    to = "https://www.fbi.gov"
+    status = 302
+    force = true
+
+# Favicon
+[[redirects]]
+    from = "/assets/images/touch/*"
+    to = "/assets/images/favicon/:splat"
+    status = 301
+    force = true
+
+# Mastodon Webfinger
+[[redirects]]
+  from = "/.well-known/webfinger"
+  to = "https://front-end.social/.well-known/webfinger?resource=acct:mxbck@front-end.social"
+  status = 200
+
+# 404s
+[[redirects]]
+    from = "*"
+    to = "/404"
+    status = 404

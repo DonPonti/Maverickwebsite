@@ -1,0 +1,103 @@
+---
+layout: base.njk
+title: Startup Directory
+permalink: /startups/
+eleventyNavigation:
+  key: Startups
+  order: 2
+---
+
+<div class="yc-directory" style="max-width: 1100px; margin: 3rem auto; padding: 0 1.5rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  
+  <!-- Header & Interactive Sorting Control -->
+  <header style="border-bottom: 2px solid #e2e8f0; padding-bottom: 1.25rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="font-family: 'Noe Display', Georgia, serif; font-size: 32px; font-weight: 600; margin: 0; color: #0f172a; letter-spacing: -0.01em;">Startup Directory</h1>
+      <p style="margin: 0.25rem 0 0 0; font-size: 15px; color: #64748b;">Discover local ecosystems and emerging platforms.</p>
+    </div>
+    
+    <!-- Sort controls -->
+    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 14px;">
+      <span style="color: #64748b; font-weight: 500;">Sort by:</span>
+      <select id="sortDirectory" style="padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; color: #334155; font-weight: 600; cursor: pointer; outline: none;">
+        <option value="rank">Rank (Ascending)</option>
+        <option value="alpha">Alphabetical (A-Z)</option>
+        <option value="location">Location</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Startup Grid List -->
+  <div id="directoryList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+    
+    {% for item in collections.startups %}
+    <!-- Dynamic Row Generated from Markdown Front Matter -->
+    <div class="company-row" data-rank="{{ loop.index }}" data-name="{{ item.data.name }}" data-location="{{ item.data.location }}" style="display: grid; grid-template-columns: 50px 64px 2fr 1.2fr 1fr; align-items: center; padding: 1rem; border-radius: 8px; background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: all 0.2s ease;">
+      
+      <!-- Synchronized Pink Accent for Rank Numbers -->
+      <div style="font-family: 'Noe Display', Georgia, serif; font-weight: 600; color: #ff335f; font-size: 16px;">
+        #{{ '0' if loop.index < 10 }}{{ loop.index }}
+      </div>
+      
+      <!-- Thumbnail Badge with a soft pink background tint -->
+      <div style="width: 48px; height: 48px; background: #fff0f3; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #ffe3e8;">
+        <span style="font-size: 12px; font-weight: 700; color: #ff335f;">{{ item.data.name.slice(0, 2) | upper }}</span>
+      </div>
+      
+      <div style="padding-left: 0.5rem;">
+        <!-- Clean SEO Link that changes color on hover inside the script -->
+        <a href="{{ item.url }}" class="company-link" style="font-weight: 700; color: #0f172a; text-decoration: none; font-size: 16px; transition: color 0.15s;">{{ item.data.name }}</a>
+        <p style="margin: 0.25rem 0 0 0; font-size: 13.5px; color: #475569; line-height: 1.4;">{{ item.data.summary }}</p>
+      </div>
+      
+      <div style="font-size: 14px; color: #475569; font-weight: 500; padding-left: 1rem;">{{ item.data.location }}</div>
+      
+      <!-- Premium Yellow Tag Badge for Genre -->
+      <div style="text-align: right;">
+        <span style="background: #fefce8; color: #a16207; border: 1px solid #fef08a; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap;">{{ item.data.genre }}</span>
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</div>
+
+<!-- Sorting logic and color-coded hover script -->
+<script>
+  document.getElementById('sortDirectory').addEventListener('change', function(e) {
+    const list = document.getElementById('directoryList');
+    const rows = Array.from(list.getElementsByClassName('company-row'));
+    const criteria = e.target.value;
+
+    rows.sort((a, b) => {
+      if (criteria === 'rank') {
+        return parseInt(a.getAttribute('data-rank')) - parseInt(b.getAttribute('data-rank'));
+      } else if (criteria === 'alpha') {
+        return a.getAttribute('data-name').localeCompare(b.getAttribute('data-name'));
+      } else if (criteria === 'location') {
+        return a.getAttribute('data-location').localeCompare(b.getAttribute('data-location'));
+      }
+    });
+
+    rows.forEach(row => list.appendChild(row));
+  });
+
+  // Dynamic hover transformations matched to your signature branding colors
+  document.querySelectorAll('.company-row').forEach(row => {
+    const link = row.querySelector('.company-link');
+    
+    row.addEventListener('mouseenter', () => { 
+      row.style.borderColor = '#ff335f'; // Snaps card borders to Leaf Pink
+      if(link) link.style.color = '#ff335f'; // Highlights title to matching pink
+      row.style.transform = 'translateY(-1px)';
+      row.style.boxShadow = '0 4px 12px rgba(255, 51, 95, 0.08)';
+    });
+    
+    row.addEventListener('mouseleave', () => { 
+      row.style.borderColor = '#e2e8f0'; 
+      if(link) link.style.color = '#0f172a';
+      row.style.transform = 'translateY(0px)';
+      row.style.boxShadow = '0 1px 3px rgba(0,0,0,0.02)';
+    });
+  });
+</script>

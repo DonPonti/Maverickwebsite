@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang or 'en' }}">
+<!--!
+    Platform built with Eleventy.
+    View the source here: {{ site.repo }}
+-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Dynamic Page Title -->
+        <title>{%- if title -%}{{ title }} | {{ site.title }}{%- else -%}{{ site.title }}{%- endif -%}</title>
+        
+        <!-- Performance Optimization: Asset Preloading -->
+        <link rel="preload" href="{{ '/assets/fonts/noe-display-medium.woff2' | url }}" as="font" type="font/woff2" crossorigin>
+        <link rel="stylesheet" href="{{ '/assets/styles/themes.css' | url }}">
+        
+        <!-- Global Meta Tags & Structured Data -->
+        {% include "meta.njk" %}
+        
+        <!-- Social Media Open Graph Metadata -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ page.url | url | absoluteUrl(site.url) }}">
+        <meta property="og:title" content="{% if title %}{{ title }}{% else %}{{ site.title }}{% endif %}">
+        <meta property="og:description" content="{{ summary or description or site.description }}">
+        <meta name="description" content="{{ summary or description or site.description }}">
+
+        {% if not build.dev and not build.naked %}
+            {% viteLinkStylesheetTags %}
+        {% endif %}
+
+        <script>{% include "initialtheme.njk" %}</script>
+    </head>
+    <body>
+        <a href="#main" class="sr-skip-link">skip to main content</a>
+
+        <div class="hfeed layout" role="document">
+            {% include "themepicker.njk" %}
+            {% include "header.njk" %}
+
+            <main class="main container" role="main" id="main" tabindex="-1">
+                {{ content | safe }}
+            </main>
+
+            {% include "footer.njk" %}
+        </div>
+
+        <!-- Vite Asset Bundler Execution Scripts -->
+        {% if build.dev %}
+            <script type="module" src="http://localhost:5173/@vite/client"></script>
+            <script type="module" src="http://localhost:5173/src/assets/scripts/main.js"></script>
+        {% else %}
+            {% viteScriptTag %}
+        {% endif %}
+    </body>
+</html>
