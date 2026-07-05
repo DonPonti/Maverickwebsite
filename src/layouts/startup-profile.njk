@@ -1,67 +1,268 @@
 ---
-layout: base
+layout: base.njk
 ---
 
-<div class="startup-profile-container" style="max-width: 900px; margin: 3rem auto; padding: 0 1.5rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  
-  <!-- Breadcrumb Navigation -->
-  <nav style="margin-bottom: 1.5rem; font-size: 14px;">
-    <a href="/startups/" style="color: #ff6600; text-decoration: none; font-weight: 500;">&larr; Back to Directory</a>
-  </nav>
+<style>
+  /* Base Body Tone Sync */
+  body {
+    background-color: #fbf9f4 !important;
+  }
 
-  <!-- Hero Row Grid -->
-  <header style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 2rem; margin-bottom: 2.5rem;">
-    <div style="display: flex; gap: 1.25rem; align-items: center;">
-      <div style="width: 64px; height: 64px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid #cbd5e1; flex-shrink: 0;">
-        <span style="font-size: 16px; font-weight: 800; color: #64748b;">{{ name.slice(0, 2) | upper }}</span>
-      </div>
-      <div>
-        <h1 style="font-size: 32px; font-weight: 800; color: #0f172a; margin: 0; letter-spacing: -0.025em;">{{ name }}</h1>
-        <p style="margin: 0.25rem 0 0 0; font-size: 16px; color: #475569; font-weight: 500;">{{ location }}</p>
-      </div>
-    </div>
-    
-    <div>
-      <a href="{{ website }}" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #ff6600; color: #fff; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 14px;">Visit Website</a>
-    </div>
-  </header>
+  /* Main profile card shell */
+  .profile-container {
+    max-width: 700px;
+    margin: 1.5rem auto 3rem auto;
+    padding: 0 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
 
-  <!-- Content Split Grid -->
-  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; align-items: flex-start;">
+  /* Inner White Profile Card */
+  .profile-card {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 1.25rem; 
+  }
+
+  /* Responsive Header */
+  .profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+  }
+
+  /* Profile Avatar Frame */
+  .profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #fff0f3;
+    border: 1px solid #ffe3e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .profile-avatar-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ff335f;
+  }
+
+  .profile-identity {
+    width: 100%;
+  }
+
+  .profile-name {
+    font-family: 'Noe Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #000000;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .profile-meta-line {
+    font-size: 14px;
+    color: #555555;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Pill Tags Layout */
+  .profile-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem;
+  }
+
+  .profile-pill {
+    display: inline-flex;
+    align-items: center;
+    background: #eae6db;
+    color: #222222;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  /* --- The Highlight Info Box Container --- */
+  .profile-info-box {
+    background: #fbf9f4; /* Subtle off-white matching page depth */
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr; /* Stacks completely on mobile */
+    gap: 0.75rem;
+  }
+
+  .info-box-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    border-bottom: 1px dashed #e5e5e5;
+    padding-bottom: 0.5rem;
+  }
+
+  .info-box-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .info-label {
+    color: #555555;
+    font-weight: 500;
+  }
+
+  .info-value {
+    color: #000000;
+    font-weight: 600;
+  }
+
+  /* Core Content/Markdown Area */
+  .profile-body {
+    font-size: 16px;
+    color: #111111;
+    line-height: 1.6;
+  }
+
+  .profile-body p {
+    margin: 0 0 1.25rem 0;
+  }
+
+  /* Action Links Section */
+  .profile-actions {
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #e5e5e5;
+    display: flex;
+    flex-direction: column; 
+    gap: 0.75rem;
+  }
+
+  .profile-btn {
+    display: block;
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid #ccc;
+    color: #000;
+    background: #fff;
+  }
+
+  .profile-btn-primary {
+    background: #ff335f;
+    color: #ffffff;
+    border-color: #ff335f;
+  }
+
+  /* Desktop Adjustments */
+  @media (min-width: 768px) {
+    .profile-card {
+      padding: 2.5rem; 
+    }
     
-    <!-- Rich Text Markdown Section -->
-    <main class="markdown" style="line-height: 1.7; color: #334155;">
-      <p style="font-size: 18px; font-weight: 500; color: #0f172a; line-height: 1.5; margin-bottom: 2rem; border-left: 3px solid #ff6600; padding-left: 1rem;">
-        {{ summary }}
-      </p>
+    .profile-header {
+      flex-direction: row;
+      align-items: flex-start;
+      text-align: left;
+      gap: 1.5rem;
+    }
+
+    .profile-tags {
+      justify-content: flex-start;
+    }
+
+    /* Transform Info Box to a clean 2-column matrix layout on big screens */
+    .profile-info-box {
+      grid-template-columns: 1fr 1fr;
+      column-gap: 2rem;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .info-box-item {
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .profile-actions {
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+
+    .profile-btn {
+      padding: 0.5rem 1.25rem;
+      width: auto;
+    }
+  }
+</style>
+
+<div class="profile-container">
+  <article class="profile-card">
+    
+    <!-- Header Component -->
+    <header class="profile-header">
+      <div class="profile-avatar">
+        <span class="profile-avatar-text">{{ name.slice(0, 2) | upper }}</span>
+      </div>
       
-      <!-- This loops in all your markdown text elements seamlessly -->
+      <div class="profile-identity">
+        <h1 class="profile-name">{{ name }}</h1>
+        <div class="profile-meta-line">📍 {{ location }}</div>
+        
+        <div class="profile-tags">
+          <div class="profile-pill">{{ genre }}</div>
+          {% if stage %}
+            <div class="profile-pill">{{ stage }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </header>
+
+    <!-- The Highlight Overview Data Box -->
+    <section class="profile-info-box">
+      <div class="info-box-item">
+        <span class="info-label">Founders:</span>
+        <span class="info-value">{{ founders if founders else "Team Instance" }}</span>
+      </div>
+      <div class="info-box-item">
+        <span class="info-label">Location:</span>
+        <span class="info-value">{{ location }}</span>
+      </div>
+      <div class="info-box-item">
+        <span class="info-label">Sector:</span>
+        <span class="info-value">{{ genre }}</span>
+      </div>
+      <div class="info-box-item">
+        <span class="info-label">Status:</span>
+        <span class="info-value" style="color: #a16207;">Active</span>
+      </div>
+    </section>
+
+    <!-- Main Text Markdown Description Area -->
+    <section class="profile-body">
       {{ content | safe }}
-    </main>
+    </section>
 
-    <!-- Meta Details Sidebar Card -->
-    <aside style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; position: sticky; top: 2rem;">
-      <h3 style="font-size: 14px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 1rem 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">Company Details</h3>
-      
-      <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 14px;">
-        <div>
-          <span style="color: #64748b; display: block; font-size: 12px; font-weight: 500;">Genre</span>
-          <strong style="color: #334155; font-weight: 600;">{{ genre }}</strong>
-        </div>
-        <div>
-          <span style="color: #64748b; display: block; font-size: 12px; font-weight: 500;">Established</span>
-          <strong style="color: #334155; font-weight: 600;">{{ established }}</strong>
-        </div>
-        <div>
-          <span style="color: #64748b; display: block; font-size: 12px; font-weight: 500;">Funding Status</span>
-          <strong style="color: #334155; font-weight: 600;">{{ funding }}</strong>
-        </div>
-        <div>
-          <span style="color: #64748b; display: block; font-size: 12px; font-weight: 500;">Team Size</span>
-          <strong style="color: #334155; font-weight: 600;">{{ teamSize }}</strong>
-        </div>
-      </div>
-    </aside>
+    <!-- Call to Actions -->
+    <footer class="profile-actions">
+      {% if website %}
+        <a href="{{ website }}" class="profile-btn profile-btn-primary" target="_blank" rel="noopener noreferrer">Visit Website</a>
+      {% endif %}
+      <a href="/startups/" class="profile-btn">← Back to Directory</a>
+    </footer>
 
-  </div>
+  </article>
 </div>
