@@ -7,6 +7,70 @@ eleventyNavigation:
   order: 2
 ---
 
+<!-- Add a CSS style block at the top of the page file to handle responsiveness -->
+<style>
+  /* Base rules for mobile layout (Stack items vertically) */
+  .company-row {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  /* Inline horizontal layouts for mobile inner meta groups */
+  .company-row-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .company-row-details {
+    width: 100%;
+  }
+
+  .company-row-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  /* Desktop layout override (Triggers on screens wider than 768px) */
+  @media (min-width: 768px) {
+    .company-row {
+      display: grid !important;
+      grid-template-columns: 50px 64px 2fr 1.2fr 1fr;
+      align-items: center;
+      padding: 1rem;
+      gap: 0;
+    }
+    .company-row-meta {
+      display: contents; /* Dissolves wrapper on desktop so grid columns work */
+    }
+    .company-row-details {
+      padding-left: 0.5rem;
+    }
+    .company-row-footer {
+      display: contents; /* Dissolves wrapper on desktop so grid columns work */
+    }
+    .company-row-footer-right {
+      text-align: right;
+      width: auto;
+    }
+  }
+</style>
+
 <div class="yc-directory" style="max-width: 1100px; margin: 3rem auto; padding: 0 1.5rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   
   <!-- Header & Interactive Sorting Control -->
@@ -32,30 +96,36 @@ eleventyNavigation:
     
     {% for item in collections.startups %}
     <!-- Dynamic Row Generated from Markdown Front Matter -->
-    <div class="company-row" data-rank="{{ loop.index }}" data-name="{{ item.data.name }}" data-location="{{ item.data.location }}" style="display: grid; grid-template-columns: 50px 64px 2fr 1.2fr 1fr; align-items: center; padding: 1rem; border-radius: 8px; background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: all 0.2s ease;">
+    <div class="company-row" data-rank="{{ loop.index }}" data-name="{{ item.data.name }}" data-location="{{ item.data.location }}">
       
-      <!-- Synchronized Pink Accent for Rank Numbers -->
-      <div style="font-family: 'Noe Display', Georgia, serif; font-weight: 600; color: #ff335f; font-size: 16px;">
-        #{{ '0' if loop.index < 10 }}{{ loop.index }}
+      <!-- Grouping Rank and Thumbnail for a beautiful horizontal profile on mobile -->
+      <div class="company-row-meta">
+        <div style="font-family: 'Noe Display', Georgia, serif; font-weight: 600; color: #ff335f; font-size: 16px; min-width: 35px;">
+          #{{ '0' if loop.index < 10 }}{{ loop.index }}
+        </div>
+        
+        <div style="width: 44px; height: 44px; background: #fff0f3; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #ffe3e8; flex-shrink: 0;">
+          <span style="font-size: 12px; font-weight: 700; color: #ff335f;">{{ item.data.name.slice(0, 2) | upper }}</span>
+        </div>
       </div>
       
-      <!-- Thumbnail Badge with a soft pink background tint -->
-      <div style="width: 48px; height: 48px; background: #fff0f3; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #ffe3e8;">
-        <span style="font-size: 12px; font-weight: 700; color: #ff335f;">{{ item.data.name.slice(0, 2) | upper }}</span>
-      </div>
-      
-      <div style="padding-left: 0.5rem;">
-        <!-- Clean SEO Link that changes color on hover inside the script -->
+      <!-- Content Details -->
+      <div class="company-row-details">
         <a href="{{ item.url }}" class="company-link" style="font-weight: 700; color: #0f172a; text-decoration: none; font-size: 16px; transition: color 0.15s;">{{ item.data.name }}</a>
         <p style="margin: 0.25rem 0 0 0; font-size: 13.5px; color: #475569; line-height: 1.4;">{{ item.data.summary }}</p>
       </div>
       
-      <div style="font-size: 14px; color: #475569; font-weight: 500; padding-left: 1rem;">{{ item.data.location }}</div>
-      
-      <!-- Premium Yellow Tag Badge for Genre -->
-      <div style="text-align: right;">
-        <span style="background: #fefce8; color: #a16207; border: 1px solid #fef08a; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap;">{{ item.data.genre }}</span>
+      <!-- Grouping Location and Genre cleanly for mobile footer alignments -->
+      <div class="company-row-footer">
+        <div style="font-size: 13px; color: #475569; font-weight: 500;">
+          <span style="color: #94a3b8; font-weight: 400; margin-right: 2px;">📍</span> {{ item.data.location }}
+        </div>
+        
+        <div class="company-row-footer-right">
+          <span style="background: #fefce8; color: #a16207; border: 1px solid #fef08a; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 11px; font-weight: 600; white-space: nowrap;">{{ item.data.genre }}</span>
+        </div>
       </div>
+
     </div>
     {% endfor %}
 
@@ -82,13 +152,12 @@ eleventyNavigation:
     rows.forEach(row => list.appendChild(row));
   });
 
-  // Dynamic hover transformations matched to your signature branding colors
   document.querySelectorAll('.company-row').forEach(row => {
     const link = row.querySelector('.company-link');
     
     row.addEventListener('mouseenter', () => { 
-      row.style.borderColor = '#ff335f'; // Snaps card borders to Leaf Pink
-      if(link) link.style.color = '#ff335f'; // Highlights title to matching pink
+      row.style.borderColor = '#ff335f'; 
+      if(link) link.style.color = '#ff335f'; 
       row.style.transform = 'translateY(-1px)';
       row.style.boxShadow = '0 4px 12px rgba(255, 51, 95, 0.08)';
     });
