@@ -6,5 +6,5 @@ export default {
     locale: 'en_IN',
     domain: 'mavericktimes.in',
     url: 'https://mavericktimes.in',
-    repo: 'https://github.com/your-username/mavericktimeseleventy'
+    repo: 'https://github.com/'
 }

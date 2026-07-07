@@ -14,7 +14,7 @@ import './common/preload'
 import './common/speedlify'
 import './common/register-serviceworker'
 
-// Dynamic Modules, Imported at Runtime
-if (document.querySelector('#webmentions')) {
-    import('./webmentions')
-}
+// Dynamic Modules, Imported at Runtime - DISABLED
+// if (document.querySelector('#webmentions')) {
+//    import('./webmentions')
+// }
