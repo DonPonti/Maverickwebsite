@@ -8,20 +8,20 @@
             "url": "https://github.com/"
         },
         "mastodon": {
-            "name": "mxbck",
-            "url": "https://front-end.social/@mxbck"
+            "name": "mtimes",
+            "url": "https://front-end.social/"
         },
         "bluesky": {
-            "name": "mxb.dev",
-            "url": "https://bsky.app/profile/mxb.dev"
+            "name": "mtimes",
+            "url": "https://bsky.app/profile/"
         },
         "codepen": {
-            "name": "mxbck",
-            "url": "https://codepen.io/mxbck/"
+            "name": "mtimes",
+            "url": "https://codepen.io/"
         },
         "notist": {
-            "name": "mxb",
-            "url": "https://noti.st/mxb"
+            "name": "mtimes",
+            "url": "https://noti.st/"
         }
     }
 }
