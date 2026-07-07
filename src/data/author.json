@@ -1,27 +1,11 @@
 {
-    "name": "Praveen Kumar",
-    "email": "officialpraveen53@gmail.com",
-    "avatar": "/assets/images/avatar2.jpg",
-    "social": {
-        "github": {
-            "name": "mtimes",
-            "url": "https://github.com/"
-        },
-        "mastodon": {
-            "name": "mtimes",
-            "url": "https://front-end.social/"
-        },
-        "bluesky": {
-            "name": "mtimes",
-            "url": "https://bsky.app/profile/"
-        },
-        "codepen": {
-            "name": "mtimes",
-            "url": "https://codepen.io/"
-        },
-        "notist": {
-            "name": "mtimes",
-            "url": "https://noti.st/"
-        }
+  "name": "Praveen Kumar",
+  "email": "officialpraveen53@gmail.com",
+  "avatar": "/assets/images/avatar2.jpg",
+  "social": {
+    "github": {
+      "name": "mtimes",
+      "url": "https://github.com/"
     }
+  }
 }
