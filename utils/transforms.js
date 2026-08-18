@@ -19,7 +19,7 @@ export default {
                 sortAttributes: true,
                 html5: true,
                 decodeEntities: true,
-                removeOptionalTags: true
+                removeOptionalTags: false
             })
         }
         return content
