@@ -43,7 +43,7 @@ async function github(path, options = {}) {
     return data
 }
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
     const password = String(event.headers?.authorization || '').replace(/^Bearer\s+/i, '')
 
     if (!process.env.MAVERICK_ADMIN_PASSWORD || password !== process.env.MAVERICK_ADMIN_PASSWORD) {
