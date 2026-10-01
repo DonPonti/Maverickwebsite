@@ -6,6 +6,7 @@
     let token = sessionStorage.getItem(SESSION) || ''
     let posts = []
     let editing = null
+    let editorMode = 'visual'
 
     const $ = (selector, root = document) => root.querySelector(selector)
     const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => ({
@@ -178,6 +179,98 @@
         })
     }
 
+
+    function markdownToHtml(markdown) {
+        const source = String(markdown || '').replace(/\r\n/g, '\n')
+        if (!source.trim()) return '<p><br></p>'
+        const lines = source.split('\n'), out = []
+        let paragraph = [], list = null, quote = [], code = false, codeLines = []
+        const flushParagraph = () => { if (paragraph.length) { out.push('<p>' + markdownInline(paragraph.join('\n')).replace(/\n/g, '<br>') + '</p>'); paragraph = [] } }
+        const flushList = () => { if (list) { out.push('<' + list.type + '>' + list.items.join('') + '</' + list.type + '>'); list = null } }
+        const flushQuote = () => { if (quote.length) { out.push('<blockquote><p>' + markdownInline(quote.join('\n')).replace(/\n/g, '<br>') + '</p></blockquote>'); quote = [] } }
+        const flushCode = () => { if (code) { out.push('<pre><code>' + esc(codeLines.join('\n')) + '</code></pre>'); codeLines = []; code = false } }
+        lines.forEach((line) => {
+            if (line.trim().startsWith(String.fromCharCode(96).repeat(3))) { flushParagraph(); flushList(); flushQuote(); if (code) flushCode(); else code = true; return }
+            if (code) { codeLines.push(line); return }
+            const heading = line.match(/^(#{1,6})\s+(.+)$/)
+            if (heading) { flushParagraph(); flushList(); flushQuote(); out.push('<h' + heading[1].length + '>' + markdownInline(heading[2]) + '</h' + heading[1].length + '>'); return }
+            if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)) { flushParagraph(); flushList(); flushQuote(); out.push('<hr>'); return }
+            const quoteLine = line.match(/^>\s?(.*)$/)
+            if (quoteLine) { flushParagraph(); flushList(); quote.push(quoteLine[1]); return }
+            if (quote.length && !quoteLine) flushQuote()
+            const ul = line.match(/^\s*[-*+]\s+(.+)$/), ol = line.match(/^\s*\d+[.)]\s+(.+)$/)
+            if (ul || ol) { flushParagraph(); const type = ul ? 'ul' : 'ol'; if (!list || list.type !== type) { flushList(); list = { type, items: [] } } list.items.push('<li>' + markdownInline((ul || ol)[1]) + '</li>'); return }
+            if (list && line.trim() === '') { flushList(); return }
+            if (!line.trim()) { flushParagraph(); flushList(); return }
+            paragraph.push(line)
+        })
+        flushCode(); flushQuote(); flushList(); flushParagraph()
+        return out.join('\n') || '<p><br></p>'
+    }
+
+    function markdownInline(value) {
+        return esc(value).replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/__([^_]+)__/g, '<strong>$1</strong>').replace(/\*([^*]+)\*/g, '<em>$1</em>').replace(/_([^_]+)_/g, '<em>$1</em>').replace(new RegExp(String.fromCharCode(96) + '([^' + String.fromCharCode(96) + ']*)' + String.fromCharCode(96), 'g'), '<code>$1</code>')
+    }
+
+    function cleanEditorHtml(html) {
+        const box = document.createElement('div'); box.innerHTML = html
+        box.querySelectorAll('script,style,iframe,object,embed,form').forEach((node) => node.remove())
+        box.querySelectorAll('*').forEach((node) => Array.from(node.attributes).forEach((attr) => {
+            if (attr.name.toLowerCase().startsWith('on')) node.removeAttribute(attr.name)
+            if ((attr.name === 'href' || attr.name === 'src') && /^javascript:/i.test(attr.value)) node.removeAttribute(attr.name)
+        }))
+        return box.innerHTML
+    }
+
+    function htmlToMarkdown(html) {
+        const root = document.createElement('div'); root.innerHTML = cleanEditorHtml(html)
+        const inline = (node) => {
+            if (node.nodeType === Node.TEXT_NODE) return node.nodeValue.replace(/\s+/g, ' ')
+            if (node.nodeType !== Node.ELEMENT_NODE) return ''
+            const tag = node.tagName.toLowerCase(), value = Array.from(node.childNodes).map(inline).join('')
+            if (tag === 'strong' || tag === 'b') return '**' + value.trim() + '**'
+            if (tag === 'em' || tag === 'i') return '*' + value.trim() + '*'
+            if (tag === 'u') return '<u>' + value.trim() + '</u>'
+            if (tag === 'code') return String.fromCharCode(96) + value.trim() + String.fromCharCode(96)
+            if (tag === 'a') return '[' + value.trim() + '](' + (node.getAttribute('href') || '') + ')'
+            if (tag === 'br') return '\n'
+            if (tag === 'img') return '![' + (node.getAttribute('alt') || '') + '](' + (node.getAttribute('src') || '') + ')'
+            return value
+        }
+        const block = (node) => {
+            if (node.nodeType === Node.TEXT_NODE) return node.nodeValue.trim()
+            if (node.nodeType !== Node.ELEMENT_NODE) return ''
+            const tag = node.tagName.toLowerCase()
+            if (/^h[1-6]$/.test(tag)) return '#'.repeat(Number(tag[1])) + ' ' + inline(node).trim() + '\n\n'
+            if (tag === 'p') return inline(node).trim() + '\n\n'
+            if (tag === 'blockquote') return inline(node).trim().split('\n').map((x) => '> ' + x).join('\n') + '\n\n'
+            if (tag === 'hr') return '---\n\n'
+            if (tag === 'pre') { const fence = String.fromCharCode(96).repeat(3); return fence + '\n' + node.textContent + '\n' + fence + '\n\n' }
+            if (tag === 'ul' || tag === 'ol') {
+                const items = Array.from(node.children).filter((x) => x.tagName.toLowerCase() === 'li')
+                return items.map((li, i) => (tag === 'ol' ? (i + 1) + '. ' : '- ') + inline(li).trim()).join('\n') + '\n\n'
+            }
+            return inline(node)
+        }
+        return Array.from(root.childNodes).map(block).join('').replace(/\n{3,}/g, '\n\n').trim()
+    }
+
+    function wireRichEditor(initialBody) {
+        const editor = $('#richEditor'); editor.innerHTML = markdownToHtml(initialBody)
+        document.querySelectorAll('[data-cmd]').forEach((button) => button.onclick = () => { editor.focus(); document.execCommand(button.dataset.cmd, false, button.dataset.value || null) })
+        $('#linkBtn').onclick = () => { editor.focus(); const url = prompt('Link URL:'); if (url) document.execCommand('createLink', false, url) }
+        $('#imageBtn').onclick = () => { editor.focus(); const url = prompt('Image URL:'); if (!url) return; const alt = prompt('Image alt text:', '') || ''; document.execCommand('insertHTML', false, '<img src="' + esc(url) + '" alt="' + esc(alt) + '">') }
+    }
+
+    function switchEditorMode(mode) {
+        const editor = $('#richEditor'), source = $('#sourceEditor')
+        if (mode === editorMode) return
+        if (mode === 'source') { source.value = htmlToMarkdown(editor.innerHTML); editor.hidden = true; source.hidden = false }
+        else { editor.innerHTML = markdownToHtml(source.value); source.hidden = true; editor.hidden = false }
+        editorMode = mode
+        document.querySelectorAll('.modeBtn').forEach((button) => button.classList.toggle('active', button.dataset.mode === mode))
+    }
+
     async function editPost(path = '') {
         editing = null
         let parsed = { meta: {}, body: '' }
@@ -218,7 +311,20 @@
                     <label class="check"><input id="featured" type="checkbox" ${m.featured ? 'checked' : ''}> Featured post</label>
                     <label class="check"><input id="draft" type="checkbox" ${m.draft ? 'checked' : ''}> Draft</label>
                 </div>
-                <label>Markdown content<textarea id="body" spellcheck="false">${esc(parsed.body)}</textarea></label>
+                <div class="writingHeader">
+                    <div><strong>Content</strong><span class="hint">Visual editor — write like WordPress. Source mode is available when needed.</span></div>
+                    <div class="modeSwitch"><button type="button" class="modeBtn active" data-mode="visual">Visual</button><button type="button" class="modeBtn" data-mode="source">Source</button></div>
+                </div>
+                <div class="richEditorWrap">
+                    <div class="richToolbar">
+                        <button type="button" data-cmd="formatBlock" data-value="p">P</button><button type="button" data-cmd="formatBlock" data-value="h2">H2</button><button type="button" data-cmd="formatBlock" data-value="h3">H3</button><span></span>
+                        <button type="button" data-cmd="bold"><strong>B</strong></button><button type="button" data-cmd="italic"><em>I</em></button><button type="button" data-cmd="underline"><u>U</u></button><button type="button" data-cmd="formatBlock" data-value="blockquote">❝</button><span></span>
+                        <button type="button" data-cmd="insertUnorderedList">• List</button><button type="button" data-cmd="insertOrderedList">1. List</button><button type="button" id="linkBtn">🔗</button><button type="button" id="imageBtn">🖼</button><button type="button" data-cmd="insertHorizontalRule">—</button><span></span>
+                        <button type="button" data-cmd="undo">↶</button><button type="button" data-cmd="redo">↷</button>
+                    </div>
+                    <div id="richEditor" class="richEditor" contenteditable="true" spellcheck="true"></div>
+                    <textarea id="sourceEditor" class="sourceEditor" spellcheck="false" hidden>\${esc(parsed.body)}</textarea>
+                </div>
                 <div class="actions">
                     <button class="btn">${path ? 'Save Changes' : 'Publish Post'}</button>
                     <button type="button" class="btn secondary" id="cancel">Cancel</button>
@@ -226,6 +332,11 @@
                 </div>
                 <div id="formMsg"></div>
             </form>`)
+
+        wireRichEditor(parsed.body)
+        document.querySelectorAll('.modeBtn').forEach((button) => {
+            button.onclick = () => switchEditorMode(button.dataset.mode)
+        })
 
         $('#title').oninput = () => {
             if (!path || !$('#slug').dataset.edited) $('#slug').value = slugify($('#title').value)
@@ -252,7 +363,8 @@
             if ($('#featuredImage').value.trim()) meta.featuredImage = $('#featuredImage').value.trim()
             else delete meta.featuredImage
 
-            const content = buildPost(meta, $('#body').value)
+            const body = editorMode === 'visual' ? htmlToMarkdown($('#richEditor').innerHTML) : $('#sourceEditor').value
+            const content = buildPost(meta, body)
             let target = path
             if (!target) {
                 const date = new Date().toISOString().slice(0, 10)
