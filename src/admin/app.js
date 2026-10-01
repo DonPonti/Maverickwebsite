@@ -235,6 +235,7 @@
             if (tag === 'a') return '[' + value.trim() + '](' + (node.getAttribute('href') || '') + ')'
             if (tag === 'br') return '\n'
             if (tag === 'img') return '![' + (node.getAttribute('alt') || '') + '](' + (node.getAttribute('src') || '') + ')'
+            if (tag === 'div' || tag === 'section' || tag === 'article') return Array.from(node.childNodes).map(inline).join('') + '\n\n'
             return value
         }
         const block = (node) => {
