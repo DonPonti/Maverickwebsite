@@ -43,8 +43,20 @@ async function github(path, options = {}) {
     return data
 }
 
+function decodeBase64(value) {
+    const binary = Buffer.from(String(value || '').replace(/\\n/g, ''), 'base64').toString('utf8')
+    return binary
+}
+
+function extractTitle(content, fallback) {
+    const match = String(content || '').match(/^---\\s*\\n[\\s\\S]*?\\n---\\s*\\n?/)
+    const frontmatter = match ? match[0] : ''
+    const title = frontmatter.match(/^title:\\s*["']?(.*?)["']?\\s*$/m)
+    return title?.[1] || fallback
+}
+
 export const handler = async (event) => {
-    const password = String(event.headers?.authorization || '').replace(/^Bearer\s+/i, '')
+    const password = String(event.headers?.authorization || '').replace(/^Bearer\\s+/i, '')
 
     if (!process.env.MAVERICK_ADMIN_PASSWORD || password !== process.env.MAVERICK_ADMIN_PASSWORD) {
         return json(401, { error: 'Unauthorized' })
@@ -58,9 +70,16 @@ export const handler = async (event) => {
         const query = event.queryStringParameters || {}
 
         if (event.httpMethod === 'GET' && query.op === 'posts') {
-            const response = await github(`/contents/${POSTS}?ref=${BRANCH}`)
-            const files = Array.isArray(response)
-                ? response.filter((file) => file.type === 'file' && file.name.endsWith('.md'))
+            const tree = await github(`/git/trees/${BRANCH}?recursive=1`)
+            const files = Array.isArray(tree.tree)
+                ? tree.tree
+                    .filter((item) => item.type === 'blob' && item.path.startsWith(POSTS) && item.path.endsWith('.md'))
+                    .map((item) => ({
+                        name: item.path.split('/').pop(),
+                        path: item.path,
+                        sha: item.sha,
+                        title: item.path.split('/').slice(-2, -1)[0]
+                    }))
                 : []
 
             return json(200, files)
