@@ -54,21 +54,25 @@ function extractTitle(content, fallback) {
     return title?.[1] || fallback
 }
 
-export const handler = async (event) => {
-    const suppliedPassword = String(event.headers?.authorization || '').replace(/^Bearer\\s+/i, '')
-    const configuredPassword = String(process.env.MAVERICK_ADMIN_PASSWORD || '')
+function getSuppliedPassword(event) {
+    const headers = event.headers || {}
+    const raw = headers.authorization || headers.Authorization || ''
+    return String(raw).replace(/^Bearer\\s+/i, '').trim()
+}
 
-    // Keep the diagnostic separate from invalid credentials so a Netlify
-    // environment-variable configuration problem is immediately identifiable.
+export const handler = async (event) => {
+    const suppliedPassword = getSuppliedPassword(event)
+    const configuredPassword = String(process.env.MAVERICK_ADMIN_PASSWORD || '').trim()
+
     if (!configuredPassword) {
         return json(500, { error: 'MAVERICK_ADMIN_PASSWORD is not configured in this Netlify deploy context' })
     }
 
-    if (suppliedPassword !== configuredPassword) {
+    if (!suppliedPassword || suppliedPassword !== configuredPassword) {
         return json(401, { error: 'Invalid admin password' })
     }
 
-    if (!process.env.MAVERICK_GITHUB_TOKEN) {
+    if (!String(process.env.MAVERICK_GITHUB_TOKEN || '').trim()) {
         return json(500, { error: 'MAVERICK_GITHUB_TOKEN is not configured in this Netlify deploy context' })
     }
 
