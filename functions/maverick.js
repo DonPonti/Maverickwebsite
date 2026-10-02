@@ -60,9 +60,28 @@ function getSuppliedPassword(event) {
     return String(raw).replace(/^Bearer\\s+/i, '').trim()
 }
 
+function normalizePassword(value) {
+    let password = String(value ?? '').trim()
+
+    // Be tolerant if the Netlify dashboard value was pasted as NAME=value.
+    const prefix = 'MAVERICK_ADMIN_PASSWORD='
+    if (password.startsWith(prefix)) password = password.slice(prefix.length).trim()
+
+    // Be tolerant of a value pasted with one matching pair of quotes.
+    if (password.length >= 2) {
+        const first = password[0]
+        const last = password[password.length - 1]
+        if ((first === '"' && last === '"') || (first === "'" && last === "'")) {
+            password = password.slice(1, -1).trim()
+        }
+    }
+
+    return password
+}
+
 export const handler = async (event) => {
-    const suppliedPassword = getSuppliedPassword(event)
-    const configuredPassword = String(process.env.MAVERICK_ADMIN_PASSWORD || '').trim()
+    const suppliedPassword = normalizePassword(getSuppliedPassword(event))
+    const configuredPassword = normalizePassword(process.env.MAVERICK_ADMIN_PASSWORD)
 
     if (!configuredPassword) {
         return json(500, { error: 'MAVERICK_ADMIN_PASSWORD is not configured in this Netlify deploy context' })
