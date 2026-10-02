@@ -44,8 +44,7 @@ async function github(path, options = {}) {
 }
 
 function decodeBase64(value) {
-    const binary = Buffer.from(String(value || '').replace(/\\n/g, ''), 'base64').toString('utf8')
-    return binary
+    return Buffer.from(String(value || '').replace(/\\n/g, ''), 'base64').toString('utf8')
 }
 
 function extractTitle(content, fallback) {
@@ -56,14 +55,21 @@ function extractTitle(content, fallback) {
 }
 
 export const handler = async (event) => {
-    const password = String(event.headers?.authorization || '').replace(/^Bearer\\s+/i, '')
+    const suppliedPassword = String(event.headers?.authorization || '').replace(/^Bearer\\s+/i, '')
+    const configuredPassword = String(process.env.MAVERICK_ADMIN_PASSWORD || '')
 
-    if (!process.env.MAVERICK_ADMIN_PASSWORD || password !== process.env.MAVERICK_ADMIN_PASSWORD) {
-        return json(401, { error: 'Unauthorized' })
+    // Keep the diagnostic separate from invalid credentials so a Netlify
+    // environment-variable configuration problem is immediately identifiable.
+    if (!configuredPassword) {
+        return json(500, { error: 'MAVERICK_ADMIN_PASSWORD is not configured in this Netlify deploy context' })
+    }
+
+    if (suppliedPassword !== configuredPassword) {
+        return json(401, { error: 'Invalid admin password' })
     }
 
     if (!process.env.MAVERICK_GITHUB_TOKEN) {
-        return json(500, { error: 'MAVERICK_GITHUB_TOKEN is not configured' })
+        return json(500, { error: 'MAVERICK_GITHUB_TOKEN is not configured in this Netlify deploy context' })
     }
 
     try {
