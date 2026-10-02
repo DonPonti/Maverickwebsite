@@ -19,6 +19,50 @@
     <div id="login" class="login"></div>
     <div id="app" hidden></div>
 
+    <script>
+        // Netlify/proxy-safe admin credential transport.
+        // The existing app stores the password in its session token and sends
+        // it as Authorization: Bearer. Move that value to a dedicated header
+        // before the request reaches the Netlify Function.
+        (() => {
+            const originalFetch = window.fetch.bind(window)
+            window.fetch = (input, init = {}) => {
+                const url = typeof input === 'string' ? input : input.url
+                if (url && url.includes('/.netlify/functions/maverick')) {
+                    const headers = new Headers(init.headers || (input instanceof Request ? input.headers : undefined))
+                    const authorization = headers.get('Authorization')
+                    if (authorization) {
+                        const match = authorization.match(/^Bearer\\s+(.+)$/i)
+                        if (match) {
+                            headers.set('X-Maverick-Admin-Password', match[1])
+                            headers.delete('Authorization')
+                        }
+                    }
+                    init = { ...init, headers, cache: 'no-store' }
+                }
+                return originalFetch(input, init)
+            }
+        })()
+
+        // Add a Show password checkbox to the dynamically-created login form.
+        (() => {
+            const addToggle = () => {
+                const input = document.querySelector('#password')
+                if (!input || document.querySelector('#showPassword')) return
+                const label = document.createElement('label')
+                label.className = 'showPassword'
+                label.style.cssText = 'display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;cursor:pointer'
+                label.innerHTML = '<input id="showPassword" type="checkbox"> Show password'
+                input.parentElement.appendChild(label)
+                document.querySelector('#showPassword').onchange = (event) => {
+                    input.type = event.target.checked ? 'text' : 'password'
+                }
+            }
+            new MutationObserver(addToggle).observe(document.documentElement, { childList: true, subtree: true })
+            addToggle()
+        })()
+    </script>
+
     <script src="./app.js"></script>
 </body>
 </html>
